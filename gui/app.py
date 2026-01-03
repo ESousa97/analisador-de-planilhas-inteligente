@@ -76,6 +76,7 @@ GRAPH_LAYOUT = {
     "legend": {"orientation": "h", "yanchor": "bottom", "y": -0.25, "xanchor": "center", "x": 0.5},
 }
 
+
 # ──────────────────────────────────────────────────────────────────────────────
 # 3. Componentes de estatísticas
 # ──────────────────────────────────────────────────────────────────────────────
@@ -89,7 +90,11 @@ def create_stat_card(title: str, value: str, icon: str, color: str) -> dbc.Card:
                         html.I(className=f"fas {icon} fa-2x", style={"color": color}),
                         html.Div(
                             [
-                                html.H4(value, className="mb-0", style={"fontWeight": 700, "color": "#FFF"}),
+                                html.H4(
+                                    value,
+                                    className="mb-0",
+                                    style={"fontWeight": 700, "color": "#FFF"},
+                                ),
                                 html.Small(title, style={"color": "#9CA3AF"}),
                             ],
                             className="ms-3",
@@ -158,7 +163,12 @@ app.layout = dbc.Container(
             dbc.Col(
                 html.Footer(
                     [
-                        html.Hr(style={"borderColor": "rgba(99, 102, 241, 0.3)", "margin": "32px 0 16px"}),
+                        html.Hr(
+                            style={
+                                "borderColor": "rgba(99, 102, 241, 0.3)",
+                                "margin": "32px 0 16px",
+                            }
+                        ),
                         html.P(
                             [
                                 html.I(className="fas fa-code me-2"),
@@ -231,7 +241,9 @@ def update_data():
 # ──────────────────────────────────────────────────────────────────────────────
 # 6. Funções auxiliares para processamento de dados
 # ──────────────────────────────────────────────────────────────────────────────
-def normalize_dataframe(df: pd.DataFrame, column_name: str, native_id_col: str | None = None) -> pd.DataFrame:
+def normalize_dataframe(
+    df: pd.DataFrame, column_name: str, native_id_col: str | None = None
+) -> pd.DataFrame:
     """
     Normaliza DataFrame preservando todos os dados e metadados.
 
@@ -281,7 +293,9 @@ def get_dataframe_info(df: pd.DataFrame, column_name: str = "") -> dict:
         label_col = cat_cols[0] if len(cat_cols) > 0 else None
 
     # Detecta coluna de frequência
-    freq_col = next((c for c in ["frequencia", "freq", "count", "contagem", "qtd"] if c in df.columns), None)
+    freq_col = next(
+        (c for c in ["frequencia", "freq", "count", "contagem", "qtd"] if c in df.columns), None
+    )
 
     # Detecta coluna de valor numérico
     val_candidates = ["valor", "valor_medio", "media", "total", "soma", "amount", "value"]
@@ -291,7 +305,9 @@ def get_dataframe_info(df: pd.DataFrame, column_name: str = "") -> dict:
     num_cols = [c for c in df.select_dtypes(include=[np.number]).columns if not c.startswith("_")]
 
     # Todas colunas categóricas (excluindo metadados)
-    cat_cols = [c for c in df.select_dtypes(include=["object", "category"]).columns if not c.startswith("_")]
+    cat_cols = [
+        c for c in df.select_dtypes(include=["object", "category"]).columns if not c.startswith("_")
+    ]
 
     return {
         "label_col": label_col,
@@ -338,7 +354,11 @@ def create_frequency_bar_chart(df: pd.DataFrame, info: dict, title: str) -> go.F
     )
     fig.update_layout(
         **GRAPH_LAYOUT,
-        title={"text": f"Frequencias - {title} ({len(plot_df)} itens)", "x": 0.5, "font": {"size": 16}},
+        title={
+            "text": f"Frequencias - {title} ({len(plot_df)} itens)",
+            "x": 0.5,
+            "font": {"size": 16},
+        },
         yaxis={"title": label_name, "autorange": "reversed"},
         xaxis={"title": "Frequencia", "gridcolor": "rgba(99,102,241,0.1)"},
         coloraxis_showscale=False,
@@ -368,10 +388,12 @@ def create_distribution_pie(df: pd.DataFrame, info: dict, title: str) -> go.Figu
         top_df = sorted_df.head(7).copy()
         others_sum = sorted_df.iloc[7:][value_col].sum()
         others_count = len(sorted_df) - 7
-        others_row = pd.DataFrame({
-            info["label_col"]: [f"Outros ({others_count} itens)"],
-            value_col: [others_sum],
-        })
+        others_row = pd.DataFrame(
+            {
+                info["label_col"]: [f"Outros ({others_count} itens)"],
+                value_col: [others_sum],
+            }
+        )
         plot_df = pd.concat([top_df[[info["label_col"], value_col]], others_row], ignore_index=True)
     else:
         plot_df = sorted_df[[info["label_col"], value_col]].copy()
@@ -386,7 +408,11 @@ def create_distribution_pie(df: pd.DataFrame, info: dict, title: str) -> go.Figu
     )
     fig.update_layout(
         **GRAPH_LAYOUT,
-        title={"text": f"Distribuicao - {title} (Total: {len(df)} itens)", "x": 0.5, "font": {"size": 16}},
+        title={
+            "text": f"Distribuicao - {title} (Total: {len(df)} itens)",
+            "x": 0.5,
+            "font": {"size": 16},
+        },
         height=450,
         showlegend=True,
         legend={"font": {"size": 11}},
@@ -418,7 +444,11 @@ def create_treemap(df: pd.DataFrame, info: dict, title: str) -> go.Figure | None
     )
     fig.update_layout(
         **GRAPH_LAYOUT,
-        title={"text": f"Mapa de Proporcoes - {title} ({len(plot_df)} itens)", "x": 0.5, "font": {"size": 16}},
+        title={
+            "text": f"Mapa de Proporcoes - {title} ({len(plot_df)} itens)",
+            "x": 0.5,
+            "font": {"size": 16},
+        },
         height=500,
         coloraxis_showscale=True,
         coloraxis_colorbar={"title": "Freq."},
@@ -448,7 +478,11 @@ def create_histogram(df: pd.DataFrame, info: dict, _title: str) -> go.Figure | N
     )
     fig.update_layout(
         **GRAPH_LAYOUT,
-        title={"text": f"Distribuicao - {col_name} ({len(df)} registros)", "x": 0.5, "font": {"size": 16}},
+        title={
+            "text": f"Distribuicao - {col_name} ({len(df)} registros)",
+            "x": 0.5,
+            "font": {"size": 16},
+        },
         xaxis={"title": col_name, "gridcolor": "rgba(99,102,241,0.1)"},
         yaxis={"title": "Contagem", "gridcolor": "rgba(99,102,241,0.1)"},
         height=350,
@@ -492,7 +526,11 @@ def create_box_plot(df: pd.DataFrame, info: dict, title: str) -> go.Figure | Non
 
     fig.update_layout(
         **GRAPH_LAYOUT,
-        title={"text": f"Analise Estatistica - {title} ({len(df)} registros)", "x": 0.5, "font": {"size": 16}},
+        title={
+            "text": f"Analise Estatistica - {title} ({len(df)} registros)",
+            "x": 0.5,
+            "font": {"size": 16},
+        },
         height=350,
         xaxis={"gridcolor": "rgba(99,102,241,0.1)"},
         yaxis={"gridcolor": "rgba(99,102,241,0.1)"},
@@ -512,7 +550,16 @@ def create_complete_data_table(df: pd.DataFrame, _info: dict, title: str) -> dbc
     show_df = display_df.head(max_display) if total_rows > max_display else display_df
 
     # Cabeçalho com nomes originais formatados
-    table_header = [html.Thead(html.Tr([html.Th(get_display_name(c), style={"whiteSpace": "nowrap"}) for c in show_df.columns]))]
+    table_header = [
+        html.Thead(
+            html.Tr(
+                [
+                    html.Th(get_display_name(c), style={"whiteSpace": "nowrap"})
+                    for c in show_df.columns
+                ]
+            )
+        )
+    ]
 
     # Corpo da tabela
     rows = []
@@ -580,14 +627,16 @@ def create_summary_stats(df: pd.DataFrame, info: dict, title: str) -> dbc.Card |
         col_data = df[col].dropna()
         if len(col_data) == 0:
             continue
-        stats_data.append({
-            "Coluna": get_display_name(col),
-            "Min": f"{col_data.min():,.2f}",
-            "Max": f"{col_data.max():,.2f}",
-            "Media": f"{col_data.mean():,.2f}",
-            "Mediana": f"{col_data.median():,.2f}",
-            "Desvio": f"{col_data.std():,.2f}",
-        })
+        stats_data.append(
+            {
+                "Coluna": get_display_name(col),
+                "Min": f"{col_data.min():,.2f}",
+                "Max": f"{col_data.max():,.2f}",
+                "Media": f"{col_data.mean():,.2f}",
+                "Mediana": f"{col_data.median():,.2f}",
+                "Desvio": f"{col_data.std():,.2f}",
+            }
+        )
 
     if not stats_data:
         return None
@@ -716,35 +765,45 @@ def render_dashboard(_n_intervals):
                 try:
                     bar_fig = create_frequency_bar_chart(df, info, title)
                     if bar_fig:
-                        all_charts.append(create_chart_card(f"Frequencias - {title}", "fa-chart-bar", bar_fig))
+                        all_charts.append(
+                            create_chart_card(f"Frequencias - {title}", "fa-chart-bar", bar_fig)
+                        )
                 except Exception:
                     pass  # Gráfico de barras falhou, continua com outros
 
                 try:
                     pie_fig = create_distribution_pie(df, info, title)
                     if pie_fig:
-                        all_charts.append(create_chart_card(f"Distribuicao - {title}", "fa-chart-pie", pie_fig))
+                        all_charts.append(
+                            create_chart_card(f"Distribuicao - {title}", "fa-chart-pie", pie_fig)
+                        )
                 except Exception:
                     pass  # Gráfico de pizza falhou, continua com outros
 
                 try:
                     treemap_fig = create_treemap(df, info, title)
                     if treemap_fig:
-                        all_charts.append(create_chart_card(f"Proporcoes - {title}", "fa-th-large", treemap_fig))
+                        all_charts.append(
+                            create_chart_card(f"Proporcoes - {title}", "fa-th-large", treemap_fig)
+                        )
                 except Exception:
                     pass  # Treemap falhou, continua com outros
 
                 try:
                     hist_fig = create_histogram(df, info, title)
                     if hist_fig:
-                        all_charts.append(create_chart_card(f"Histograma - {title}", "fa-signal", hist_fig))
+                        all_charts.append(
+                            create_chart_card(f"Histograma - {title}", "fa-signal", hist_fig)
+                        )
                 except Exception:
                     pass  # Histograma falhou, continua com outros
 
                 try:
                     box_fig = create_box_plot(df, info, title)
                     if box_fig:
-                        all_charts.append(create_chart_card(f"Box Plot - {title}", "fa-boxes-stacked", box_fig))
+                        all_charts.append(
+                            create_chart_card(f"Box Plot - {title}", "fa-boxes-stacked", box_fig)
+                        )
                 except Exception:
                     pass  # Box plot falhou, continua com outros
 
@@ -763,7 +822,9 @@ def render_dashboard(_n_intervals):
                     pass  # Tabela de dados falhou, continua com outros
 
                 # Separador visual entre seções
-                all_charts.append(html.Hr(style={"borderColor": "rgba(99,102,241,0.2)", "margin": "32px 0"}))
+                all_charts.append(
+                    html.Hr(style={"borderColor": "rgba(99,102,241,0.2)", "margin": "32px 0"})
+                )
 
             except Exception:
                 logger.exception("Erro ao processar agrupamento")
@@ -775,10 +836,28 @@ def render_dashboard(_n_intervals):
 
         # Cards de estatísticas no topo
         stats_cards = [
-            dbc.Col(create_stat_card("Colunas Analisadas", str(total_columns), "fa-columns", "#6366F1"), md=3),
-            dbc.Col(create_stat_card("Registros Totais", f"{total_records:,}", "fa-database", "#22D3EE"), md=3),
-            dbc.Col(create_stat_card("Termos Unicos", f"{total_unique_terms:,}", "fa-fingerprint", "#10B981"), md=3),
-            dbc.Col(create_stat_card("Pontos de Dados", f"{total_data_points:,}", "fa-braille", "#F59E0B"), md=3),
+            dbc.Col(
+                create_stat_card("Colunas Analisadas", str(total_columns), "fa-columns", "#6366F1"),
+                md=3,
+            ),
+            dbc.Col(
+                create_stat_card(
+                    "Registros Totais", f"{total_records:,}", "fa-database", "#22D3EE"
+                ),
+                md=3,
+            ),
+            dbc.Col(
+                create_stat_card(
+                    "Termos Unicos", f"{total_unique_terms:,}", "fa-fingerprint", "#10B981"
+                ),
+                md=3,
+            ),
+            dbc.Col(
+                create_stat_card(
+                    "Pontos de Dados", f"{total_data_points:,}", "fa-braille", "#F59E0B"
+                ),
+                md=3,
+            ),
         ]
 
         return stats_cards, all_charts
@@ -787,7 +866,9 @@ def render_dashboard(_n_intervals):
         # Retorna erro amigável em caso de falha
         error_msg = html.Div(
             [
-                html.I(className="fas fa-exclamation-triangle fa-3x mb-3", style={"color": "#EF4444"}),
+                html.I(
+                    className="fas fa-exclamation-triangle fa-3x mb-3", style={"color": "#EF4444"}
+                ),
                 html.H4("Erro ao processar dados", style={"color": "#EF4444"}),
                 html.P(str(e), style={"color": "#9CA3AF", "fontSize": "12px"}),
             ],

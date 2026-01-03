@@ -64,7 +64,11 @@ def detect_native_id_column(df: pd.DataFrame) -> str | None:
         col_clean = col_lower.replace("_", "").replace("-", "").replace(" ", "")
 
         for pattern in ID_COLUMN_PATTERNS:
-            if col_clean == pattern or col_lower.startswith(pattern + "_") or col_lower.endswith("_" + pattern):
+            if (
+                col_clean == pattern
+                or col_lower.startswith(pattern + "_")
+                or col_lower.endswith("_" + pattern)
+            ):
                 # Verifica se é realmente única ou quase única (>95%)
                 uniqueness = df[col].nunique() / len(df) if len(df) > 0 else 0
                 if uniqueness >= 0.95:
