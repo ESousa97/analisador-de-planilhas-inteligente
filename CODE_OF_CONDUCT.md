@@ -36,7 +36,7 @@ Este Código de Conduta se aplica em todos os espaços da comunidade e também q
 
 ## Aplicação
 
-Casos de comportamento abusivo, de assédio ou de outra forma inaceitável podem ser reportados aos líderes da comunidade responsáveis pela aplicação em [enoquesousa97@outlook.com].
+Casos de comportamento abusivo, de assédio ou de outra forma inaceitável podem ser reportados aos líderes da comunidade responsáveis pela aplicação em [https://github.com/ESousa97](https://github.com/ESousa97).
 
 Todas as reclamações serão revisadas e investigadas prontamente e de forma justa.
 

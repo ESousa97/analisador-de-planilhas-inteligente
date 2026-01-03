@@ -12,7 +12,7 @@ Se você descobrir uma vulnerabilidade de segurança, por favor **NÃO** abra um
 
 ### Como Reportar
 
-1. **Email**: Envie um email para [ESousa97] com:
+1. **GitHub**: Reporte via [GitHub Security Advisories](https://github.com/ESousa97/analisador-de-planilhas-inteligente/security/advisories) ou contate [@ESousa97](https://github.com/ESousa97) com:
    - Descrição detalhada da vulnerabilidade
    - Passos para reproduzir
    - Impacto potencial
