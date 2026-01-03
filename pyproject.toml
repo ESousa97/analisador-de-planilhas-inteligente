@@ -1,0 +1,185 @@
+[project]
+name = "analisador-de-planilhas-inteligente"
+version = "1.0.0"
+description = "Análise semântica e padronização automática de planilhas com NLP e fuzzy matching"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+    { name = "José Enoque", email = "enoquesousa97@outlook.com" }
+]
+keywords = [
+    "data-analysis",
+    "spreadsheet",
+    "nlp",
+    "fuzzy-matching",
+    "semantic-analysis",
+    "data-cleaning",
+    "pandas",
+    "pyqt5",
+    "dash"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: X11 Applications :: Qt",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Office/Business :: Financial :: Spreadsheet",
+    "Typing :: Typed"
+]
+
+dependencies = [
+    "pandas>=2.0.0",
+    "openpyxl>=3.1.0",
+    "xlrd>=2.0.0",
+    "chardet>=5.0.0",
+    "numpy>=1.24.0",
+    "unidecode>=1.3.0",
+    "rapidfuzz>=3.0.0",
+    "rdflib>=6.0.0",
+    "sentence-transformers>=2.2.0",
+    "scikit-learn>=1.3.0",
+    "tqdm>=4.65.0",
+    "dash>=2.14.0",
+    "dash-bootstrap-components>=1.5.0",
+    "flask>=3.0.0",
+    "pyqt5>=5.15.0",
+    "qdarkstyle>=3.2.0",
+    "qtawesome>=1.3.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-qt>=4.2.0",
+    "ruff>=0.1.0",
+    "pre-commit>=3.5.0",
+    "pip-audit>=2.6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ESousa97/analisador-de-planilhas-inteligente"
+Repository = "https://github.com/ESousa97/analisador-de-planilhas-inteligente.git"
+Documentation = "https://github.com/ESousa97/analisador-de-planilhas-inteligente#readme"
+Issues = "https://github.com/ESousa97/analisador-de-planilhas-inteligente/issues"
+
+[project.scripts]
+analyzer = "main:main"
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["analysis*", "config*", "core*", "gui*", "reports*"]
+
+# ============================================================================
+# Ruff - Linter & Formatter
+# ============================================================================
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "PTH",    # flake8-use-pathlib
+    "PL",     # Pylint
+    "RUF",    # Ruff-specific rules
+    "S",      # flake8-bandit (security)
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "PLR0913", # too many arguments
+    "PLR2004", # magic value comparison
+    "S101",   # use of assert (OK in tests)
+    "B008",   # function call in default argument
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "ARG001", "PLR2004", "PLC0415"]  # pytest patterns
+"analysis/detector.py" = ["E501"]  # Large dictionary definitions
+"analysis/indicator.py" = ["SIM113"]  # Manual counter for progress callback
+"gui/*" = ["PLW0603", "PLR0912", "PLR0915", "S110", "S603", "PTH109", "PTH110", "PTH118", "PTH120"]  # GUI complexity
+"core/utils.py" = ["ARG001", "PTH202"]  # API signature compatibility
+"core/loader.py" = ["PTH123", "TC003"]  # Path.open compatibility
+"reports/*" = ["PTH103", "PTH118", "PTH123"]  # Legacy path handling
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+
+[tool.ruff.lint.isort]
+known-first-party = ["analysis", "config", "core", "gui", "reports"]
+
+# ============================================================================
+# Pytest
+# ============================================================================
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--tb=short",
+    "-ra",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "gui: marks tests that require GUI",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+# ============================================================================
+# Coverage
+# ============================================================================
+[tool.coverage.run]
+branch = true
+source = ["analysis", "config", "core", "gui", "reports"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+show_missing = true
+precision = 2

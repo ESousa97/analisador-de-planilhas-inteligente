@@ -1,21 +1,23 @@
-import os
 import json
+import os
 import re
+
 
 def slugify(text):
     # Gera nomes de arquivos seguros
     text = str(text)
-    text = re.sub(r'[^\w\s-]', '', text, flags=re.UNICODE)
-    text = re.sub(r'[-\s]+', '_', text).strip('_').lower()
+    text = re.sub(r"[^\w\s-]", "", text, flags=re.UNICODE)
+    text = re.sub(r"[-\s]+", "_", text).strip("_").lower()
     return text or "coluna"
+
 
 def show_indicators(indicators):
     print("\n🟦  ANÁLISE DA PLANILHA")
-    print("="*70)
+    print("=" * 70)
     print(f"🔹 Coluna de ID:  {indicators.get('id_coluna', '-')}")
     print(f"🔹 Linhas:        {indicators.get('total_linhas', '-')}")
     print(f"🔹 Colunas:       {indicators.get('total_colunas', '-')}")
-    print("-"*70)
+    print("-" * 70)
 
     if not indicators.get("agrupamentos"):
         print("Nenhuma coluna com valores repetidos relevante para agrupamento.")
@@ -42,6 +44,7 @@ def show_indicators(indicators):
         else:
             print("Sem dados agrupados nem estatísticas.")
 
+
 def export_indicators(indicators, output_dir, base_name="relatorio"):
     os.makedirs(output_dir, exist_ok=True)
     # Exporta meta/resumo
@@ -56,13 +59,12 @@ def export_indicators(indicators, output_dir, base_name="relatorio"):
 
     for grupo in indicators.get("agrupamentos", []):
         col = grupo.get("coluna", "sem_nome")
-        tipo = grupo.get("tipo", "-")
         slug = slugify(col)
         # Exporta tabela agrupada se houver
         tabela = grupo.get("tabela")
         if tabela is not None and hasattr(tabela, "to_csv"):
             tab_path = os.path.join(output_dir, f"{base_name}_{slug}.csv")
-            tabela.to_csv(tab_path, index=False, encoding='utf-8')
+            tabela.to_csv(tab_path, index=False, encoding="utf-8")
             print(f"[OK] Exportado agrupamento: {tab_path}")
         # Exporta estatísticas se houver
         stats = grupo.get("estatisticas")

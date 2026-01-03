@@ -2,6 +2,14 @@
 
 *Da Desordem dos Dados à Clareza Estratégica: Análise Semântica e Padronização Automática de Planilhas.*
 
+<!-- Badges de Status -->
+[![CI](https://github.com/ESousa97/analisador-de-planilhas-inteligente/actions/workflows/ci.yml/badge.svg)](https://github.com/ESousa97/analisador-de-planilhas-inteligente/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/ESousa97/analisador-de-planilhas-inteligente/actions/workflows/codeql.yml/badge.svg)](https://github.com/ESousa97/analisador-de-planilhas-inteligente/actions/workflows/codeql.yml)
+[![Dependabot](https://img.shields.io/badge/dependabot-enabled-brightgreen?logo=dependabot)](https://github.com/ESousa97/analisador-de-planilhas-inteligente/network/updates)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Code style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+
 ---
 
 ## 📸 Demonstração Visual
@@ -35,7 +43,7 @@ A solução combina **algoritmos de similaridade de strings** (`rapidfuzz`) para
 
 ## 🏆 Badges
 
-![Python](https://img.shields.io/badge/Python-3.10-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![PyQt5](https://img.shields.io/badge/PyQt5-Desktop-41CD52?style=for-the-badge&logo=qt&logoColor=white)
 ![Dash](https://img.shields.io/badge/Dash-Web_Dashboard-00D4AA?style=for-the-badge&logo=plotly&logoColor=white)
 ![Pandas](https://img.shields.io/badge/Pandas-Data_Analysis-150458?style=for-the-badge&logo=pandas&logoColor=white)
@@ -58,6 +66,7 @@ A solução combina **algoritmos de similaridade de strings** (`rapidfuzz`) para
 6. [📂 Estrutura do Projeto](#-estrutura-do-projeto)
 7. [📋 Pré-requisitos](#-pré-requisitos)
 8. [🚀 Instalação](#-instalação)
+
 9. [⚙️ Uso](#️-uso)
 10. [🔧 API Reference](#-api-reference)
 11. [🧪 Testes](#-testes)

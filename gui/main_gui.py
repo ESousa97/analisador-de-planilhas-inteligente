@@ -1,32 +1,41 @@
-import sys
 import os
-import json
+import subprocess
+import sys
 import threading
 import webbrowser
-import subprocess
-import requests
-import qtawesome as qta
-from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QPushButton, QLabel, QLineEdit, QTextBrowser, QProgressBar, QFileDialog
-)
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
-from core.loader import load_spreadsheet
-from core.id_generator import ensure_id_column
-from core.utils import normalize_cep_column
+import qtawesome as qta
+import requests
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMainWindow,
+    QProgressBar,
+    QPushButton,
+    QTextBrowser,
+    QVBoxLayout,
+    QWidget,
+)
+
 from analysis.indicator import generate_indicators
+from core.id_generator import ensure_id_column
+from core.loader import load_spreadsheet
+from core.utils import normalize_cep_column
 
 
 def prepare_indicators_for_json(indicators):
     copy = {**indicators}
     agrup = []
-    for grp in indicators.get('agrupamentos', []):
+    for grp in indicators.get("agrupamentos", []):
         entry = dict(grp)
-        if entry.get('tabela') is not None:
-            entry['tabela'] = entry['tabela'].to_dict(orient='records')
+        if entry.get("tabela") is not None:
+            entry["tabela"] = entry["tabela"].to_dict(orient="records")
         agrup.append(entry)
-    copy['agrupamentos'] = agrup
+    copy["agrupamentos"] = agrup
     return copy
 
 
@@ -59,7 +68,7 @@ class AnalyzeWorker(QThread):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Intelligent Spreadsheet Analyzer - Desktop')
+        self.setWindowTitle("Intelligent Spreadsheet Analyzer - Desktop")
         self.setGeometry(200, 200, 1100, 700)
         self._apply_styles()
 
@@ -70,10 +79,10 @@ class MainWindow(QMainWindow):
         # Título com ícone
         title_layout = QHBoxLayout()
         icon_label = QLabel()
-        icon_label.setPixmap(qta.icon('fa5s.chart-bar', color='#7289DA').pixmap(26, 26))
+        icon_label.setPixmap(qta.icon("fa5s.chart-bar", color="#7289DA").pixmap(26, 26))
         title_layout.addWidget(icon_label)
         title = QLabel("Resumo da Análise")
-        title.setStyleSheet('font-weight: bold; font-size: 19px; color: #7289DA;')
+        title.setStyleSheet("font-weight: bold; font-size: 19px; color: #7289DA;")
         title_layout.addWidget(title)
         title_layout.addStretch()
         layout.addLayout(title_layout)
@@ -81,13 +90,13 @@ class MainWindow(QMainWindow):
         # File selection
         file_layout = QHBoxLayout()
         excel_icon = QLabel()
-        excel_icon.setPixmap(qta.icon('fa5s.file-excel', color='#43B581').pixmap(20, 20))
-        file_label = QLabel('Selecione a planilha (.csv, .xlsx, .xls):')
+        excel_icon.setPixmap(qta.icon("fa5s.file-excel", color="#43B581").pixmap(20, 20))
+        file_label = QLabel("Selecione a planilha (.csv, .xlsx, .xls):")
         file_layout.addWidget(excel_icon)
         file_layout.addWidget(file_label)
         self.file_entry = QLineEdit()
         self.file_entry.setReadOnly(True)
-        browse_btn = QPushButton(qta.icon('fa5s.folder-open', color='#fff'), ' Procurar')
+        browse_btn = QPushButton(qta.icon("fa5s.folder-open", color="#fff"), " Procurar")
         browse_btn.clicked.connect(self.select_file)
         file_layout.addWidget(self.file_entry)
         file_layout.addWidget(browse_btn)
@@ -95,11 +104,11 @@ class MainWindow(QMainWindow):
 
         # Buttons
         btn_layout = QHBoxLayout()
-        self.analyze_btn = QPushButton(qta.icon('fa5s.play', color='#fff'), ' Analisar')
+        self.analyze_btn = QPushButton(qta.icon("fa5s.play", color="#fff"), " Analisar")
         self.analyze_btn.setEnabled(False)
         self.analyze_btn.clicked.connect(self.start_analysis)
-        self.web_btn = QPushButton(qta.icon('fa5s.globe', color='#fff'), ' Abrir Interface Web')
-        self.web_btn.clicked.connect(lambda: webbrowser.open('http://127.0.0.1:8050'))
+        self.web_btn = QPushButton(qta.icon("fa5s.globe", color="#fff"), " Abrir Interface Web")
+        self.web_btn.clicked.connect(lambda: webbrowser.open("http://127.0.0.1:8050"))
         btn_layout.addWidget(self.analyze_btn)
         btn_layout.addWidget(self.web_btn)
         layout.addLayout(btn_layout)
@@ -119,11 +128,11 @@ class MainWindow(QMainWindow):
         self.label_cols = QLabel()
         self.label_cols.setStyleSheet("font-size: 13px; color: #FFD700;")
         id_icon = QLabel()
-        id_icon.setPixmap(qta.icon('fa5s.id-badge', color='#43B581').pixmap(18, 18))
+        id_icon.setPixmap(qta.icon("fa5s.id-badge", color="#43B581").pixmap(18, 18))
         row_icon = QLabel()
-        row_icon.setPixmap(qta.icon('fa5s.list-ol', color='#FFD700').pixmap(18, 18))
+        row_icon.setPixmap(qta.icon("fa5s.list-ol", color="#FFD700").pixmap(18, 18))
         col_icon = QLabel()
-        col_icon.setPixmap(qta.icon('fa5s.table', color='#FFD700').pixmap(18, 18))
+        col_icon.setPixmap(qta.icon("fa5s.table", color="#FFD700").pixmap(18, 18))
         info_layout.addWidget(id_icon)
         info_layout.addWidget(self.label_id)
         info_layout.addWidget(row_icon)
@@ -168,7 +177,7 @@ class MainWindow(QMainWindow):
         nome_layout = QHBoxLayout()
         nome_layout.setAlignment(Qt.AlignHCenter)
         dev_icon = QLabel()
-        dev_icon.setPixmap(qta.icon('fa5s.user-tie', color='#7289DA').pixmap(18, 18))
+        dev_icon.setPixmap(qta.icon("fa5s.user-tie", color="#7289DA").pixmap(18, 18))
         dev_text = QLabel("<b>José Enoque</b>  —  Desenvolvedor Full Stack")
         dev_text.setStyleSheet("color:#B9BBBE; font-size:13px; margin-left:3px;")
         nome_layout.addWidget(dev_icon)
@@ -179,9 +188,11 @@ class MainWindow(QMainWindow):
         auto_layout = QHBoxLayout()
         auto_layout.setAlignment(Qt.AlignHCenter)
         auto_icon = QLabel()
-        auto_icon.setPixmap(qta.icon('fa5s.robot', color='#43B581').pixmap(17, 17))
+        auto_icon.setPixmap(qta.icon("fa5s.robot", color="#43B581").pixmap(17, 17))
         auto_text = QLabel("Foco em automação e soluções inteligentes")
-        auto_text.setStyleSheet("color:#8bffae; font-size:12px; font-style:italic; margin-left:3px;")
+        auto_text.setStyleSheet(
+            "color:#8bffae; font-size:12px; font-style:italic; margin-left:3px;"
+        )
         auto_layout.addWidget(auto_icon)
         auto_layout.addWidget(auto_text)
         center_layout.addLayout(auto_layout)
@@ -189,8 +200,8 @@ class MainWindow(QMainWindow):
         # Botões de rede social
         btns_layout = QHBoxLayout()
         btns_layout.setAlignment(Qt.AlignHCenter)
-        
-        linkedin_btn = QPushButton(qta.icon('fa5b.linkedin', color='#0A66C2'), "LinkedIn")
+
+        linkedin_btn = QPushButton(qta.icon("fa5b.linkedin", color="#0A66C2"), "LinkedIn")
         linkedin_btn.setStyleSheet("""
             QPushButton {
                 background-color: #23272A;
@@ -206,10 +217,12 @@ class MainWindow(QMainWindow):
                 color: #fff;
             }
         """)
-        linkedin_btn.clicked.connect(lambda: webbrowser.open('https://www.linkedin.com/in/enoque-sousa-bb89aa168/'))
+        linkedin_btn.clicked.connect(
+            lambda: webbrowser.open("https://www.linkedin.com/in/enoque-sousa-bb89aa168/")
+        )
         btns_layout.addWidget(linkedin_btn)
 
-        github_btn = QPushButton(qta.icon('fa5b.github', color='#b9bbbe'), "GitHub")
+        github_btn = QPushButton(qta.icon("fa5b.github", color="#b9bbbe"), "GitHub")
         github_btn.setStyleSheet("""
             QPushButton {
                 background-color: #23272A;
@@ -225,7 +238,7 @@ class MainWindow(QMainWindow):
                 color: #23272A;
             }
         """)
-        github_btn.clicked.connect(lambda: webbrowser.open('https://github.com/ESousa97'))
+        github_btn.clicked.connect(lambda: webbrowser.open("https://github.com/ESousa97"))
         btns_layout.addWidget(github_btn)
 
         center_layout.addLayout(btns_layout)
@@ -286,7 +299,7 @@ class MainWindow(QMainWindow):
 
     def select_file(self):
         path, _ = QFileDialog.getOpenFileName(
-            self, 'Selecionar Planilha', os.getcwd(), 'Planilhas (*.csv *.xlsx *.xls)'
+            self, "Selecionar Planilha", os.getcwd(), "Planilhas (*.csv *.xlsx *.xls)"
         )
         if path:
             self.file_entry.setText(path)
@@ -321,41 +334,61 @@ class MainWindow(QMainWindow):
         <div style="font-family: JetBrains Mono, Consolas, monospace; font-size: 13px; color: #FFFFFF;">
         """)
 
-        if not indicators.get('agrupamentos'):
+        if not indicators.get("agrupamentos"):
             append("""
             <div style="color:#FF5E5B; margin-top:8px;">
                 <b>Aviso:</b> Nenhuma coluna com valores repetidos ou relevantes para agrupamento detectada.
             </div>
             """)
         else:
-            for grp in indicators['agrupamentos']:
+            for grp in indicators["agrupamentos"]:
                 append(f"""
                 <div style="margin-top:18px; margin-bottom:2px; font-weight:bold; color:#A3A3FF; font-size:15px;">
-                    {grp['coluna']} <span style="color:#B9BBBE; font-size:12px;">({grp.get('tipo', '-')})</span>
+                    {grp["coluna"]} <span style="color:#B9BBBE; font-size:12px;">({grp.get("tipo", "-")})</span>
                 </div>
                 """)
-                if grp.get('estatisticas'):
-                    append('<div style="margin-left:18px; color:#43B581; font-size:13px;"><b>Estatísticas:</b></div><ul style="margin:0 0 4px 32px; color:#B9BBBE;">')
-                    for k, v in grp['estatisticas'].items():
-                        append(f'<li><b>{k.capitalize()}:</b> {v}</li>')
-                    append('</ul>')
-                if grp.get('tabela') is not None:
-                    df = grp['tabela']
+                if grp.get("estatisticas"):
+                    append(
+                        '<div style="margin-left:18px; color:#43B581; font-size:13px;"><b>Estatísticas:</b></div><ul style="margin:0 0 4px 32px; color:#B9BBBE;">'
+                    )
+                    for k, v in grp["estatisticas"].items():
+                        append(f"<li><b>{k.capitalize()}:</b> {v}</li>")
+                    append("</ul>")
+                if grp.get("tabela") is not None:
+                    df = grp["tabela"]
                     cols = df.columns[:3]
-                    append('<table style="margin-left:18px; background:#23272A; border-collapse:collapse; margin-top:2px; font-size:12px;">')
-                    append('<tr>' + ''.join(f'<th style="border-bottom:1px solid #5865F2; color:#F5F5F5; padding:2px 8px;">{col}</th>' for col in cols) + '</tr>')
+                    append(
+                        '<table style="margin-left:18px; background:#23272A; border-collapse:collapse; margin-top:2px; font-size:12px;">'
+                    )
+                    append(
+                        "<tr>"
+                        + "".join(
+                            f'<th style="border-bottom:1px solid #5865F2; color:#F5F5F5; padding:2px 8px;">{col}</th>'
+                            for col in cols
+                        )
+                        + "</tr>"
+                    )
                     for _, row in df.head(8).iterrows():
-                        append('<tr>' + ''.join(f'<td style="padding:1px 8px; color:#B9BBBE;">{row[c]}</td>' for c in cols) + '</tr>')
+                        append(
+                            "<tr>"
+                            + "".join(
+                                f'<td style="padding:1px 8px; color:#B9BBBE;">{row[c]}</td>'
+                                for c in cols
+                            )
+                            + "</tr>"
+                        )
                     if len(df) > 8:
-                        append(f'<tr><td colspan="{len(cols)}" style="color:#AAAAAA; font-style:italic; padding-left:6px;">... e mais {len(df)-8} registros.</td></tr>')
-                    append('</table>')
+                        append(
+                            f'<tr><td colspan="{len(cols)}" style="color:#AAAAAA; font-style:italic; padding-left:6px;">... e mais {len(df) - 8} registros.</td></tr>'
+                        )
+                    append("</table>")
         append("</div>")
-        self.output.setHtml(''.join(resumo))
+        self.output.setHtml("".join(resumo))
 
         # Mantém envio para Dash
         try:
-            url = 'http://127.0.0.1:8050/update_data'
-            headers = {'Content-Type': 'application/json'}
+            url = "http://127.0.0.1:8050/update_data"
+            headers = {"Content-Type": "application/json"}
             json_data = prepare_indicators_for_json(indicators)
             requests.post(url, json=json_data, headers=headers, timeout=5)
         except Exception:
@@ -370,12 +403,12 @@ class MainWindow(QMainWindow):
         self.analyze_btn.setEnabled(True)
 
     def _start_dash(self):
-        script = os.path.join(os.path.dirname(__file__), 'app.py')
+        script = os.path.join(os.path.dirname(__file__), "app.py")
         if os.path.exists(script):
             try:
                 subprocess.Popen([sys.executable, script])
             except Exception as e:
-                print(f'Erro iniciando Dash: {e}')
+                print(f"Erro iniciando Dash: {e}")
 
 
 def run_gui():
@@ -385,5 +418,5 @@ def run_gui():
     sys.exit(app.exec_())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_gui()

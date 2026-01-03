@@ -76,3 +76,15 @@ coverage.xml
 *~
 *.bak
 *.old
+# Internal analysis files (not versioned)
+BASELINE.md
+FINAL.md
+
+# Ruff cache
+.ruff_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.json
