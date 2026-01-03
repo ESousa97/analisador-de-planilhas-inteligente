@@ -392,7 +392,7 @@ class MainWindow(QMainWindow):
             json_data = prepare_indicators_for_json(indicators)
             requests.post(url, json=json_data, headers=headers, timeout=5)
         except Exception:
-            pass
+            pass  # Dashboard pode não estar rodando
         finally:
             self.progress.setVisible(False)
             self.analyze_btn.setEnabled(True)

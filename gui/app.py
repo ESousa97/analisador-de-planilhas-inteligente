@@ -718,49 +718,49 @@ def render_dashboard(_n_intervals):
                     if bar_fig:
                         all_charts.append(create_chart_card(f"Frequencias - {title}", "fa-chart-bar", bar_fig))
                 except Exception:
-                    pass  # Ignora erro em gráfico individual
+                    pass  # Gráfico de barras falhou, continua com outros
 
                 try:
                     pie_fig = create_distribution_pie(df, info, title)
                     if pie_fig:
                         all_charts.append(create_chart_card(f"Distribuicao - {title}", "fa-chart-pie", pie_fig))
                 except Exception:
-                    pass
+                    pass  # Gráfico de pizza falhou, continua com outros
 
                 try:
                     treemap_fig = create_treemap(df, info, title)
                     if treemap_fig:
                         all_charts.append(create_chart_card(f"Proporcoes - {title}", "fa-th-large", treemap_fig))
                 except Exception:
-                    pass
+                    pass  # Treemap falhou, continua com outros
 
                 try:
                     hist_fig = create_histogram(df, info, title)
                     if hist_fig:
                         all_charts.append(create_chart_card(f"Histograma - {title}", "fa-signal", hist_fig))
                 except Exception:
-                    pass
+                    pass  # Histograma falhou, continua com outros
 
                 try:
                     box_fig = create_box_plot(df, info, title)
                     if box_fig:
                         all_charts.append(create_chart_card(f"Box Plot - {title}", "fa-boxes-stacked", box_fig))
                 except Exception:
-                    pass
+                    pass  # Box plot falhou, continua com outros
 
                 try:
                     stats_card = create_summary_stats(df, info, title)
                     if stats_card:
                         all_charts.append(stats_card)
                 except Exception:
-                    pass
+                    pass  # Stats card falhou, continua com outros
 
                 try:
                     data_table = create_complete_data_table(df, info, title)
                     if data_table:
                         all_charts.append(data_table)
                 except Exception:
-                    pass
+                    pass  # Tabela de dados falhou, continua com outros
 
                 # Separador visual entre seções
                 all_charts.append(html.Hr(style={"borderColor": "rgba(99,102,241,0.2)", "margin": "32px 0"}))
